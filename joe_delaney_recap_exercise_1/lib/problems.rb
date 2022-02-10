@@ -65,15 +65,8 @@ class Hash
     # hash_2.my_select                            # => {4=>4}
     def my_select(&prc)
         new_hash = {}
-        if prc.nil?
-            self.each do |k, v|
-                new_hash[k] = v if k == v
-            end
-        else
-            self.each do |k, v|
-                new_hash[k] = v if prc.call(k, v)
-            end
-        end
+        prc ||= Proc.new {|k, v| k == v}
+        self.each {|k, v| new_hash[k] = v if prc.call(k, v)}
         new_hash
     end
 end
